@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BANTAI KEYLOGGER BIAR MUSNAH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+        
+        .glass {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .title-text {
+            color: #6a04b3;
+        }
+        
+        .btn-primary {
+            background: #6a04b3;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #9500ff;
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        
+        .log-container {
+            background: #0f172a;
+            border: 1px solid #334155;
+        }
+        
+        .status-success { color: #10b981; }
+        .status-error { color: #ef4444; }
+        .status-warning { color: #f59e0b; }
+        .status-info { color: #3b82f6; }
+        
+        .tab-active {
+            background: #6a04b3;
+            color: white;
+        }
+        
+        input, textarea {
+            background: rgba(15, 23, 42, 0.9);
+            border-color: #475569;
+        }
+        
+        input:focus, textarea:focus {
+            border-color: #3b82f6;
+            outline: none;
+        }
+        
+        .red-focus:focus {
+            border-color: #ef4444;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+    <div class="container mx-auto px-6 py-8">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold title-text mb-4">
+                BANTAI KEYLOGGER BIAR MUSNAH
+            </h1>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="flex justify-center mb-8">
+            <div class="glass rounded-lg p-1 inline-flex">
+                <button id="spamTab" class="tab-active px-6 py-2 rounded-md font-medium transition-all">
+                    <i class="fas fa-paper-plane mr-2"></i>Spam Pesan
+                </button>
+                <button id="deleteTab" class="px-6 py-2 rounded-md font-medium text-gray-400 hover:text-white transition-all">
+                    <i class="fas fa-trash-alt mr-2"></i>Hapus Webhook
+                </button>
+            </div>
+        </div>
+
+        <div class="max-w-3xl mx-auto">
+            <!-- Send Messages Panel -->
+            <div id="spamPanel" class="glass rounded-lg p-6 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Webhook URL</label>
+                        <input id="webhookUrl" type="text" 
+                            placeholder="https://discord.com/api/webhooks/..."
+                            class="w-full border rounded-md px-3 py-2 text-white placeholder-gray-400">
+                    </div>
+                    <div class="flex items-end">
+                        <button id="checkBtn" class="w-full btn-primary text-white px-4 py-2 rounded-md font-medium">
+                            <i class="fas fa-check-circle mr-2"></i>Check
+                        </button>
+                    </div>
+                </div>
+
+                <div id="statusDisplay" class="mb-4 p-3 glass rounded-md border border-gray-600">
+                    <i class="fas fa-info-circle mr-2" style="color: #6a04b3;"></i>
+                    <span class="text-gray-300">Masukan Url Webhook Dan Tekan Tombol Check</span>
+                </div>
+
+                <div id="messageForm" class="hidden space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-300 mb-1">Nama Bot</label>
+                            <input id="botName" type="text" placeholder="Webhook Bot"
+                                class="w-full border rounded-md px-3 py-2 text-white placeholder-gray-400">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-300 mb-1">Jumlah Pesan ( 1-100 )</label>
+                            <input id="messageCount" type="number" min="1" max="50" value="1"
+                                class="w-full border rounded-md px-3 py-2 text-white">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm text-gray-300 mb-1">Isi Pesan</label>
+                        <textarea id="messageContent" rows="3" placeholder="Isi Pesan Anda Disini"
+                            class="w-full border rounded-md px-3 py-2 text-white placeholder-gray-400 resize-none"></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm text-gray-300 mb-1">URL Avatar (Opsional)</label>
+                        <input id="avatarUrl" type="text" placeholder="https://example.com/avatar.png"
+                            class="w-full border rounded-md px-3 py-2 text-white placeholder-gray-400">
+                    </div>
+                    
+                    <button id="sendBtn" class="w-full btn-primary text-white py-3 rounded-md font-semibold">
+                        <i class="fas fa-paper-plane mr-2"></i>Kirim Pesan
+                    </button>
+                </div>
+            </div>
+
+            <!-- Delete Webhook Panel -->
+            <div id="deletePanel" class="glass rounded-lg p-6 mb-6 hidden">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Webhook URL</label>
+                        <input id="deleteWebhookUrl" type="text" 
+                            placeholder="https://discord.com/api/webhooks/..."
+                            class="w-full border rounded-md px-3 py-2 text-white placeholder-gray-400 red-focus">
+                    </div>
+                    <div class="flex items-end">
+                        <button id="checkDeleteBtn" class="w-full btn-primary text-white px-4 py-2 rounded-md font-medium">
+                            <i class="fas fa-check-circle mr-2"></i>Check
+                        </button>
+                    </div>
+                </div>
+
+                <div id="deleteStatus" class="mb-4 p-3 glass rounded-md border border-gray-600">
+                    <i class="fas fa-info-circle mr-2 text-blue-400"></i>
+                    <span class="text-gray-300">Masukan Url Webhook Dan Tekan Tombol Check</span>
+                </div>
+
+                <div id="deleteAction" class="hidden">
+                    <button id="deleteBtn" class="w-full btn-danger text-white py-3 rounded-md font-semibold">
+                        <i class="fas fa-trash-alt mr-2"></i>Hapus Webhook
+                    </button>
+                </div>
+            </div>
+
+            <!-- Activity Log -->
+            <div class="glass rounded-lg p-4">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-lg font-semibold text-gray-200">Log Aktivitas</h3>
+                    <button id="clearLog" class="text-sm bg-gray-700 hover:bg-gray-600 text-gray-300 px-3 py-1 rounded-md">
+                        Clear
+                    </button>
+                </div>
+                <div id="activityLog" class="log-container rounded-md p-3 h-48 overflow-y-auto font-mono text-sm">
+                    <div class="status-info">[INFO] BANTAI KEYLOGGER BIAR MUSNAH Tools Ready</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const elements = {
+            spamTab: document.getElementById('spamTab'),
+            deleteTab: document.getElementById('deleteTab'),
+            spamPanel: document.getElementById('spamPanel'),
+            deletePanel: document.getElementById('deletePanel'),
+            webhookUrl: document.getElementById('webhookUrl'),
+            checkBtn: document.getElementById('checkBtn'),
+            statusDisplay: document.getElementById('statusDisplay'),
+            messageForm: document.getElementById('messageForm'),
+            sendBtn: document.getElementById('sendBtn'),
+            deleteWebhookUrl: document.getElementById('deleteWebhookUrl'),
+            checkDeleteBtn: document.getElementById('checkDeleteBtn'),
+            deleteStatus: document.getElementById('deleteStatus'),
+            deleteAction: document.getElementById('deleteAction'),
+            deleteBtn: document.getElementById('deleteBtn'),
+            activityLog: document.getElementById('activityLog'),
+            clearLog: document.getElementById('clearLog')
+        };
+
+        const log = (message, type = 'info') => {
+            const time = new Date().toLocaleTimeString();
+            const colors = { success: 'status-success', error: 'status-error', warning: 'status-warning', info: 'status-info' };
+            elements.activityLog.innerHTML += `<div class="${colors[type]}">[${type.toUpperCase()}] ${time} - ${message}</div>`;
+            elements.activityLog.scrollTop = elements.activityLog.scrollHeight;
+        };
+
+        const setStatus = (element, message, type = 'info') => {
+            const icons = { success: 'check-circle', error: 'times-circle', warning: 'exclamation-triangle', info: 'info-circle' };
+            const colors = { success: 'text-green-400', error: 'text-red-400', warning: 'text-yellow-400', info: 'text-blue-400' };
+            element.innerHTML = `<i class="fas fa-${icons[type]} mr-2 ${colors[type]}"></i><span class="${colors[type]}">${message}</span>`;
+        };
+
+        const validateWebhook = async (url) => {
+            if (!url || !url.includes('discord.com/api/webhooks')) return false;
+            try {
+                const response = await fetch(url);
+                return response.ok;
+            } catch {
+                return false;
+            }
+        };
+
+        const switchTab = (activeTab, activePanel, inactiveTab, inactivePanel) => {
+            activeTab.classList.add('tab-active');
+            inactiveTab.classList.remove('tab-active');
+            inactiveTab.classList.add('text-gray-400');
+            activeTab.classList.remove('text-gray-400');
+            activePanel.classList.remove('hidden');
+            inactivePanel.classList.add('hidden');
+        };
+
+        elements.spamTab.onclick = () => switchTab(elements.spamTab, elements.spamPanel, elements.deleteTab, elements.deletePanel);
+        elements.deleteTab.onclick = () => switchTab(elements.deleteTab, elements.deletePanel, elements.spamTab, elements.spamPanel);
+
+        elements.checkBtn.onclick = async () => {
+            const url = elements.webhookUrl.value;
+            setStatus(elements.statusDisplay, 'Mengecek Webhook...', 'info');
+            
+            if (await validateWebhook(url)) {
+                setStatus(elements.statusDisplay, 'Webhook Valid', 'success');
+                elements.messageForm.classList.remove('hidden');
+                log('Webhook berhasil diverifikasi', 'success');
+            } else {
+                setStatus(elements.statusDisplay, 'Webhook tidak valid', 'error');
+                elements.messageForm.classList.add('hidden');
+                log('Webhook gagal diverifikasi', 'error');
+            }
+        };
+
+        elements.checkDeleteBtn.onclick = async () => {
+            const url = elements.deleteWebhookUrl.value;
+            setStatus(elements.deleteStatus, 'Mengecek Webhook...', 'info');
+            
+            if (await validateWebhook(url)) {
+                setStatus(elements.deleteStatus, 'Webhook Valid', 'success');
+                elements.deleteAction.classList.remove('hidden');
+                log('Webhook siap dihapus', 'success');
+            } else {
+                setStatus(elements.deleteStatus, 'Webhook tidak valid', 'error');
+                elements.deleteAction.classList.add('hidden');
+                log('Webhook gagal diverifikasi', 'error');
+            }
+        };
+
+       elements.sendBtn.onclick = async () => {
+    const url = elements.webhookUrl.value;
+    const content = document.getElementById('messageContent').value;
+    const username = document.getElementById('botName').value || 'Bot';
+    const avatar_url = document.getElementById('avatarUrl').value;
+    const count = Math.min(Math.max(parseInt(document.getElementById('messageCount').value) || 1, 1), 100);
+
+    if (!content.trim()) {
+        log('Pesan tidak boleh kosong', 'error');
+        return;
+    }
+
+    const payload = { content, username };
+    if (avatar_url) payload.avatar_url = avatar_url;
+
+    log(`Mengirim ${count} pesan...`, 'info');
+    let success = 0;
+
+    for (let i = 0; i < count; i++) {
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.status === 204) {
+                success++;
+                log(`${success}/${count} pesan berhasil dikirim`, 'success');
+            } else if (response.status === 429) {
+                const data = await response.json();
+                log(`Rate limit: menunggu ${data.retry_after}s`, 'warning');
+                await new Promise(resolve => setTimeout(resolve, data.retry_after * 1000));
+                i--; // ulangi pengiriman yang sama
+            } else {
+                log(`Pesan ${i + 1} gagal (${response.status})`, 'error');
+            }
+        } catch (error) {
+            log(`Pesan ${i + 1} error: ${error.message}`, 'error');
+        }
+
+        if (i < count - 1) {
+            await new Promise(resolve => setTimeout(resolve, 300)); // delay antar pesan
+        }
+    }
+
+    log(`Selesai: ${success}/${count} pesan terkirim`, success === count ? 'success' : 'warning');
+};
+
+
+        elements.deleteBtn.onclick = async () => {
+            const url = elements.deleteWebhookUrl.value;
+            try {
+                const response = await fetch(url, { method: 'DELETE' });
+                if (response.status === 204) {
+                    setStatus(elements.deleteStatus, 'Webhook Terhapus', 'success');
+                    elements.deleteAction.classList.add('hidden');
+                    elements.deleteWebhookUrl.value = '';
+                    log('Webhook berhasil dihapus', 'success');
+                } else {
+                    log(`Gagal hapus webhook (${response.status})`, 'error');
+                }
+            } catch (error) {
+                log(`Error: ${error.message}`, 'error');
+            }
+        };
+
+        elements.clearLog.onclick = () => {
+            elements.activityLog.innerHTML = '<div class="status-info">[INFO] Log dibersihkan</div>';
+        };
+
+        document.getElementById('messageCount').oninput = function() {
+            this.value = Math.min(Math.max(parseInt(this.value) || 1, 1), 50);
+        };
+    </script>
+</body>
+</html>
